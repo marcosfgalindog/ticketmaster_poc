@@ -24,3 +24,35 @@ Ticketmaster Demo for reporting
     - Need to get an idea of how to use DOMO
     - Create a simple dashboard
     - Provide metric with most recent information pulled.
+
+
+## CURRENT PROGRESS
+### Data extraction
+- DONE
+    - Extraction of data has been complited
+        - Added security measures so no api-key would be published
+        - Created service account connection to BigQuery so no constant authentication via web browser would be needed
+        - Set up BigQuery env
+        - Set up Visual Studio Code enviroment
+        - Set up repository for pushing updates
+        - Creation of Ticketmaster credentials
+        - Creation on pipeline for extraction
+            - Adapted to support multiple type of objects: venues and attractions
+        - Creation of Stage databases for ingesting the data
+        - Data formatting to BigQuery needs (new line json format)
+
+- TO DO
+    - Probably a mass download of specific attractions is needed
+    - Probably a mass download of specific venues is needed
+    - Alert system in case an issue arrises on the pipeline
+
+### Transformation step
+- TO DO
+    - Create query for ingesting data from stage and place it in a tailored dataset to be used in DOMO
+    - Validations on Data consistency
+    - Validations
+
+### Visualizations
+- Incorporate data into dashboards
+
+    
