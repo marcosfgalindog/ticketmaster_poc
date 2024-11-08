@@ -55,4 +55,9 @@ Ticketmaster Demo for reporting
 ### Visualizations
 - Incorporate data into dashboards
 
+
+### Here is proof of the data already flowing in
+<img width="1026" alt="Screenshot 2024-11-08 at 10 15 26 AM" src="https://github.com/user-attachments/assets/c7ef2a79-ac72-45ef-910a-0040b50026f4">
+
+
     
