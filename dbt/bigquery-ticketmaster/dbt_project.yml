@@ -1,0 +1,15 @@
+# dbt_project.yml
+name: Analytics
+version: "1.0"
+dbt-cloud:
+    project-id: 70471823397360
+analysis-paths: ["analyses"]
+profile: bigquery-ticketmaster  # For dbt-Core. configure in ~/.dbt/profiles.yml
+models:
+    +transient: false
+    Analytics:
+      ticketmaster-demo-argo.stage_db:
+        +copy_grants: true
+        +database: ticketmaster-demo-argo
+        +schema: stage_db
+        +materialized: table
