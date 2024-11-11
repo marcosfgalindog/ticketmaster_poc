@@ -1,19 +1,19 @@
-name: ticketmaster_poc
+name: Analytics
 version: "1.0"
 dbt-cloud:
-    project-id: 70471823397360
+    project-id: 70471823397825
 analysis-paths: ["analyses"]
-profile: ticketmaster_poc  # For dbt-Core. configure in ~/.dbt/profiles.yml
+profile: Analytics  # For dbt-Core. configure in ~/.dbt/profiles.yml
 models:
     +transient: false
-    Analytics:
-      ticketmaster-demo-argo.stage_db:
+    ticketmaster-demo-argo:
+      stage_db:
         +copy_grants: true
         +database: ticketmaster-demo-argo
         +schema: stage_db
         +materialized: table
 
-      ticketmaster-demo-argo.ticketmaster_db:
+      ticketmaster_db:
         +copy_grants: true
         +database: ticketmaster-demo-argo
         +schema: ticketmaster_db

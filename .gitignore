@@ -9,3 +9,4 @@ dbt_packages/
 logs/
 # end dbt Cloud content
 profile.yml
+dbt_cloud.yml
