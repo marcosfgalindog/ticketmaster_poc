@@ -3,7 +3,7 @@ version: "1.0"
 dbt-cloud:
     project-id: 70471823397360
 analysis-paths: ["analyses"]
-profile: bigquery-ticketmaster  # For dbt-Core. configure in ~/.dbt/profiles.yml
+profile: ticketmaster_poc  # For dbt-Core. configure in ~/.dbt/profiles.yml
 models:
     +transient: false
     Analytics:
