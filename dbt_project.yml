@@ -1,4 +1,4 @@
-name: ticketmaster_elt
+name: ticketmaster_poc
 version: "1.0"
 dbt-cloud:
     project-id: 70471823397360
