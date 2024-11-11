@@ -1,8 +1,0 @@
-sources:
-- database: ticketmaster-demo-argo
-  name: ticketmaster-demo-argo.stage_db
-  schema: stage_db
-  tables:
-    - name: events_tb
-    - name: attractions_tb
-    - name: venues_tb

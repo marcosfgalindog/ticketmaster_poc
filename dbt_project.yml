@@ -1,5 +1,4 @@
-# dbt_project.yml
-name: Analytics
+name: ticketmaster_elt
 version: "1.0"
 dbt-cloud:
     project-id: 70471823397360
@@ -12,4 +11,10 @@ models:
         +copy_grants: true
         +database: ticketmaster-demo-argo
         +schema: stage_db
+        +materialized: table
+
+      ticketmaster-demo-argo.ticketmaster_db:
+        +copy_grants: true
+        +database: ticketmaster-demo-argo
+        +schema: ticketmaster_db
         +materialized: table
