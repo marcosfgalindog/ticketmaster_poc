@@ -10,3 +10,4 @@ logs/
 # end dbt Cloud content
 profile.yml
 dbt_cloud.yml
+dbt_service_account_key.json

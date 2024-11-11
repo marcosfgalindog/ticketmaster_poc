@@ -3,18 +3,18 @@ version: "1.0"
 dbt-cloud:
     project-id: 70471823397825
 analysis-paths: ["analyses"]
-profile: Analytics  # For dbt-Core. configure in ~/.dbt/profiles.yml
+profile: ticketmasterargodemo  # For dbt-Core. configure in ~/.dbt/profiles.yml
 models:
     +transient: false
-    ticketmaster-demo-argo:
+    stage:
       stage_db:
         +copy_grants: true
-        +database: ticketmaster-demo-argo
-        +schema: stage_db
+        +database: ticketmasterargodemo
+        +schema: stage
         +materialized: table
 
-      ticketmaster_db:
+      production:
         +copy_grants: true
-        +database: ticketmaster-demo-argo
-        +schema: ticketmaster_db
+        +database: ticketmasterargodemo
+        +schema: production
         +materialized: table

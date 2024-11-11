@@ -1,13 +1,13 @@
 sources:
-  - database: ticketmaster-demo-argo
-    name: ticketmaster-demo-argo.stage_db
-    schema: stage_db
+  - database: ticketmasterargodemo
+    name: ticketmasterargodemo.stage
+    schema: stage
     tables:
     - name: events_tb
     - name: attractions_tb
     - name: venues_tb
-  - database: ticketmaster-demo-argo
-    name: ticketmaster-demo-argo.ticketmaster_db
-    schema: ticketmaster_db
+  - database: ticketmasterargodemo
+    name: ticketmasterargodemo.production
+    schema: production
     tables:
     - name: elt_tb
