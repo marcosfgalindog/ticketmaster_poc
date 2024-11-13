@@ -11,3 +11,8 @@ sources:
     schema: production
     tables:
     - name: elt_tb
+    - name: priceranges_elt
+    - name: classification_elt
+    - name: products_elt
+    - name: events_elt
+    - name: attractions_elt

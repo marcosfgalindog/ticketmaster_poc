@@ -8,26 +8,20 @@
 
 
 SELECT 
-
-    ev.id event_id
-  , ev.type
-  , ev.name
-  , ev.description
-  , ev.info
-  , ev.locale
-  , ev.pleaseNote
+  ev.id event_id
+  , un.*
   , ev.db_stamp
-
 FROM {{source("ticketmasterargodemo.stage","events_tb")}} ev
+
+-- This statement allows you to unnest objects inside of a 'table'
+CROSS JOIN UNNEST(ev.priceRanges) as un
 
 -- This is the statment that will validate if the incremental is valid,
 -- otherwise a full insert will be made 
 {% if is_incremental() %}
 
-LEFT JOIN {{source("ticketmasterargodemo.production","events_elt")}} th on 
-    ev.id = th.event_id
-
-
+LEFT JOIN {{source("ticketmasterargodemo.production","priceranges_elt")}} th 
+    on ev.id = th.event_id
 WHERE th.event_id IS NULL
 
 {% endif %}
