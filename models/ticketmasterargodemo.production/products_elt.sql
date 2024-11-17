@@ -7,13 +7,16 @@
 }}
 
 
-select 
+-- after testing the relationship between attraction and product is irrelevant
+
+SELECT 
   ev.id event_id
-  , un.*
+--   , un.id attraction_id
+  , pr.*
   , ev.db_stamp
-from {{source("ticketmasterargodemo.stage","events_tb")}} ev
--- This statement allows you to access nested objects inside of a 'table'
-CROSS JOIN UNNEST(ev.products) as un
+FROM {{source("ticketmasterargodemo.stage","events_tb")}} ev
+-- CROSS JOIN UNNEST(ev._embedded.attractions) un
+CROSS JOIN UNNEST(ev.products) pr
 
 -- This is the statment that will validate if the incremental is valid,
 -- otherwise a full insert will be made 

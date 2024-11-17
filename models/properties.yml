@@ -16,3 +16,5 @@ sources:
     - name: products_elt
     - name: events_elt
     - name: attractions_elt
+    - name: event_attractions_elt
+    - name: venues_elt
