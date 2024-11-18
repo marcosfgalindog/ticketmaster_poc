@@ -4,9 +4,49 @@ import json
 import requests 
 from datetime import datetime
 
+# packages to send out the notifications
+
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+import os.path
+import sys
+
+import traceback
+from traceback import format_exception
+
+
 # invoque dbt commands from the pythyon itself
 from dbt.cli.main import dbtRunner, dbtRunnerResult
 
+def send_email_notification(send_to_emails, subject, message):
+
+    email = 'korean.markus1992@gmail.com'
+    password = open('email_key.txt','r').read()
+
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(email, password)
+
+    # Loop over each email to send to
+    for send_to_email in send_to_emails:
+
+        # Setup MIMEMultipart for each email address (if we don't do this, the emails will concatenate on each email sent)
+        msg = MIMEMultipart()
+        msg['From'] = email
+        msg['To'] = send_to_email
+        msg['Subject'] = subject
+
+        # Attach the message to the MIMEMultipart object
+        msg.attach(MIMEText(message, 'plain'))
+        
+        # Send the email to this specific email address
+        server.sendmail(email, send_to_email, msg.as_string())
+
+    # Quit the email server when everything is done
+    server.quit()
 
 def save_request(request_data, page_number, file_path='events_data.json'):
 # def save_request(request_data, page_number, file_path='events_data_231101-241101'):
@@ -188,12 +228,10 @@ def upload_data_to_bigquer(object_of_interest):
     print("Loaded {} rows for object {} into {}:{}.".format(job.output_rows, object_of_interest, dataset_id, table_id))
 
 
-
-
 def download_data():
 
     start_of_month = datetime.utcnow().replace(day=1).strftime('%Y-%m-%dT00:00:00Z')
-    current_date = datetime.utcnow().strftime('%Y-%m-%d') + 'T00:00:00Z'
+    current_date = datetime.utcnow().strftime('%Y-%m-%d') + 'T0:00:00Z'
 
     ticketmaster_download_data('events',current_date,current_date,current_date,'50')
     print('')
@@ -247,11 +285,45 @@ def run_final_dbt_dataset():
 
 
 def run_process():
-    download_data()
-    db_stage_cleanup()
-    dataset_upload()
-    run_dbt_models()
-    run_final_dbt_dataset()
+    try:
+        download_data()
+        db_stage_cleanup()
+        dataset_upload()
+        run_dbt_models()
+        run_final_dbt_dataset()
+
+    except Exception as ex:
+
+        exc_type, exc_obj, tb = sys.exc_info()
+        info, error = traceback.format_exception(exc_type, exc_obj, tb)[-2:] 
+
+        # loop through all the code used before           
+        var_list = {}
+        if tb is not None:
+            prev = tb
+            curr = tb.tb_next
+            while curr is not None:
+                prev = curr
+                curr = curr.tb_next
+            var_list = prev.tb_frame.f_locals
+
+        error_log = ''.join(traceback.format_exception(type(ex), value=ex, tb=ex.__traceback__))                     
+    
+        var_list.pop('consumer_key')
+
+        msg_to_send = """This is an error email.        
+        The error is located here:
+
+        """ + error_log + """
+
+        The sys last vars where the following: 
+
+        """ + str(var_list)
+        
+        #print(msg_to_send)
+        send_email_notification(['marcosfgalindog@hotmail.com']
+                                    ,'Error in Ticketmaster pipeline' 
+                                    ,msg_to_send)
 
 if __name__ == "__main__":
     run_process()

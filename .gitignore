@@ -11,3 +11,4 @@ logs/
 profile.yml
 dbt_cloud.yml
 dbt_service_account_key.json
+email_key.txt
