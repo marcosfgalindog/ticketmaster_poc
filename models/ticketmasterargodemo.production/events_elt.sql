@@ -12,14 +12,13 @@ SELECT
     ev.id event_id
   , ev.type
   , ev.name
-  , ev.description
+--   , ev.description
   , ev.info
   , ev.locale
   , ev.pleaseNote
-  , ev.dates.initialStartDate.dateTime start_datetime
-  , ev.dates.end.dateTime end_datetime
+  , ev.dates.start.dateTime as start_datetime
+--   , ev.dates.end.dateTime end_datetime
   , ev.dates.status
-  , ev.doorsTimes.localDate
   , ev.db_stamp
 
 FROM {{source("ticketmasterargodemo.stage","events_tb")}} ev

@@ -27,3 +27,4 @@ LEFT JOIN {{source("ticketmasterargodemo.production","products_elt")}} th on
 WHERE th.event_id IS NULL
 
 {% endif %}
+qualify row_number() over(partition by ev.id order by ev.db_stamp desc) = 1

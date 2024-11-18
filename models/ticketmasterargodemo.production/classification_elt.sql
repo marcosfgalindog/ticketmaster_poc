@@ -17,7 +17,7 @@ WITH attr_classifications as (
     -- This statement allows you to access nested objects inside of a 'table'
     CROSS JOIN UNNEST(ev.classifications) as un
     WHERE un.primary = true
-
+    qualify row_number() over(partition by ev.id order by ev.db_stamp desc) = 1 
 )
 
 SELECT ac.*
