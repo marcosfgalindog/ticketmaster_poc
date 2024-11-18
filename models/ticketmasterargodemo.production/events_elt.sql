@@ -17,6 +17,8 @@ SELECT
   , ev.locale
   , ev.pleaseNote
   , ev.dates.start.dateTime as start_datetime
+  , ev.sales.public.startDateTime
+  , ev.sales.public.endDateTime
 --   , ev.dates.end.dateTime end_datetime
   , ev.dates.status
   , ev.db_stamp

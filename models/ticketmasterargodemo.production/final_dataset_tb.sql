@@ -9,6 +9,8 @@ SELECT
   , ev.name
   , ev.type ev_type_name
   , ev.start_datetime
+  , ev.startDateTime
+  , ev.endDateTime
   -- , ev.end_datetime
   , cl.genre.name class_gen
   , cl.subGenre.name class_subgen

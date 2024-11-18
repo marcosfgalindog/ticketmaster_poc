@@ -4,6 +4,9 @@ import json
 import requests 
 from datetime import datetime
 
+# invoque dbt commands from the pythyon itself
+from dbt.cli.main import dbtRunner, dbtRunnerResult
+
 
 def save_request(request_data, page_number, file_path='events_data.json'):
 # def save_request(request_data, page_number, file_path='events_data_231101-241101'):
@@ -36,8 +39,10 @@ def save_request(request_data, page_number, file_path='events_data.json'):
 
 # pipeline to download information from an endpoint
 
+# pipeline to download information from an endpoint
+
 error_case = None
-def ticketmaster_download_data(object_to_retrieve,start= '2023-11-01T00:00:00Z',end ='2024-11-01T00:00:00Z',page_size = '80'):
+def ticketmaster_download_data(object_to_retrieve,endstart='',start= '2023-11-01T00:00:00Z',end ='2024-11-01T00:00:00Z',page_size = '80'):
     
     global error_case
 
@@ -54,8 +59,14 @@ def ticketmaster_download_data(object_to_retrieve,start= '2023-11-01T00:00:00Z',
 
     url0 = f'https://app.ticketmaster.com/discovery/v2/{object_to_retrieve}.json?'
     url0 += 'countryCode=' + country_code
-    url0 += '&startDateTime=' + start 
-    url0 += '&endDateTime=' + end
+    if endstart != '':
+        url0 += '&startEndDateTime='+endstart
+    if start != '':
+        # url0 += '&startDateTime=' + start 
+        url0 += '&onsaleStartDateTime=' + start 
+    if end != '':
+        # url0 += '&endDateTime=' + end
+        url0 += '&onsaleEndDateTime=' + end
     # url0 += '&classificationName=' + 'music'
     url0 += '&size=' + page_size + '&apikey=' + consumer_key
 
@@ -85,6 +96,7 @@ def ticketmaster_download_data(object_to_retrieve,start= '2023-11-01T00:00:00Z',
             # increase the page
             i += 1
             print(f'Total pages: {total_pages}')
+            print(f'Total enries: {total_elements}')
             if total_pages > 1000:
                 # break
                 print('it will break')
@@ -138,6 +150,7 @@ def ticketmaster_download_data(object_to_retrieve,start= '2023-11-01T00:00:00Z',
     # delete unformatted version of the data
     os.remove(f'datasets/{object_to_retrieve}_data.json')
 
+
 # function to upload raw data into BigQuery
 
 from google.cloud import bigquery
@@ -182,35 +195,63 @@ def download_data():
     start_of_month = datetime.utcnow().replace(day=1).strftime('%Y-%m-%dT00:00:00Z')
     current_date = datetime.utcnow().strftime('%Y-%m-%d') + 'T00:00:00Z'
 
-    ticketmaster_download_data('events','2023-11-01T00:00:00Z',current_date,'50')
+    ticketmaster_download_data('events',current_date,current_date,current_date,'50')
     print('')
-    ticketmaster_download_data('attractions',start_of_month,current_date,'80') # this is pending
-    print('')
-    ticketmaster_download_data('venues',start_of_month,current_date,'80') # got limited to only 1000 records per deep-page request
+    # ticketmaster_download_data('attractions',start_of_month,current_date,'80') # this is pending
+    # print('')
+    # ticketmaster_download_data('venues',start_of_month,current_date,'80') # got limited to only 1000 records per deep-page request
 
 
 def db_stage_cleanup():
 
-    for object in ['events','attractions','venues']:
+    for object in ['events']: #,'attractions','venues']:
         
         # 3 , for deleting the data
         query_string = f"""DROP TABLE `ticketmasterargodemo.stage.{object}_tb`;"""
         results = client.query_and_wait(query_string)
 
         print(f'The table {object} has been cleaned.')
+        print('')
 
 
 def dataset_upload():
 
     upload_data_to_bigquer('events')
-    upload_data_to_bigquer('attractions')
-    upload_data_to_bigquer('venues')
+    # upload_data_to_bigquer('attractions')
+    # upload_data_to_bigquer('venues')
+    print('')
+
+def run_dbt_models():
+    # execute dbt commands
+    dbt = dbtRunner()
+    cli_args = ["run","--select","events_elt.sql classification_elt.sql event_attractions_elt.sql priceranges_elt.sql products_elt.sql venues_elt.sql"]
+
+    res: dbtRunnerResult = dbt.invoke(cli_args)
+
+    print('')
+    for r in res.result:
+        print(f"{r.node.name}: {r.status}")
+    print('')
+
+def run_final_dbt_dataset():
+    # execute dbt commands
+    dbt = dbtRunner()
+    cli_args = ["run","--select","final_dataset_tb"]
+
+    res: dbtRunnerResult = dbt.invoke(cli_args)
+
+    print('')
+    for r in res.result:
+        print(f"{r.node.name}: {r.status}")
+    print('')
+
 
 def run_process():
     download_data()
     db_stage_cleanup()
     dataset_upload()
-
+    run_dbt_models()
+    run_final_dbt_dataset()
 
 if __name__ == "__main__":
     run_process()
