@@ -231,7 +231,7 @@ def upload_data_to_bigquer(object_of_interest):
 def download_data():
 
     start_of_month = datetime.utcnow().replace(day=1).strftime('%Y-%m-%dT00:00:00Z')
-    current_date = datetime.utcnow().strftime('%Y-%m-%d') + 'T0:00:00Z'
+    current_date = datetime.utcnow().strftime('%Y-%m-%d') + 'T00:00:00Z'
 
     ticketmaster_download_data('events',current_date,current_date,current_date,'50')
     print('')
